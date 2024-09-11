@@ -5,7 +5,6 @@ import wikipedia
 import os
 import webbrowser
 import pyjokes
-import pywhatkit as kit
 import streamlit as st
 
 # Initialize text-to-speech engine
@@ -63,10 +62,6 @@ def take_command():
         return "None"
     return query
 
-# Check if running in a headless environment
-def is_headless():
-    return "DISPLAY" not in os.environ
-
 # Function to perform tasks based on the command
 def perform_task():
     query = take_command().lower()
@@ -84,10 +79,10 @@ def perform_task():
         except wikipedia.exceptions.PageError:
             speak(f"'{query}' does not match any Wikipedia page.")
     
-    elif 'play' in query and not is_headless():
+    elif 'play' in query:
         song = query.replace('play', "")
-        speak("Playing " + song)
-        kit.playonyt(song)  # This requires pyautogui, so it won't work in headless mode
+        speak(f"Searching YouTube for {song}")
+        webbrowser.open(f"https://www.youtube.com/results?search_query={song}")
     
     elif 'open youtube' in query:
         webbrowser.open("https://www.youtube.com/")
@@ -96,8 +91,9 @@ def perform_task():
         webbrowser.open("https://www.google.com/")
     
     elif 'search' in query:
-        s = query.replace('search', '')
-        kit.search(s)
+        search_query = query.replace('search', '')
+        speak(f"Searching Google for {search_query}")
+        webbrowser.open(f"https://www.google.com/search?q={search_query}")
     
     elif 'the time' in query:
         str_time = datetime.datetime.now().strftime("%H:%M:%S")
@@ -111,10 +107,9 @@ def perform_task():
         speak(pyjokes.get_joke())
     
     elif "where is" in query:
-        query = query.replace("where is", "")
-        location = query
+        location = query.replace("where is", "")
         speak(f"Locating {location}")
-        webbrowser.open("https://www.google.nl/maps/place/" + location.replace(" ", "+"))
+        webbrowser.open(f"https://www.google.com/maps/place/{location.replace(' ', '+')}")
     
     elif 'exit' in query:
         speak("Exiting now.")
