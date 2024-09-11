@@ -3,5 +3,3 @@ pyttsx3
 SpeechRecognition
 wikipedia-api
 pyjokes
-pywhatkit==5.3
-Pillow
